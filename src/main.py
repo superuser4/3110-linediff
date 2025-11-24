@@ -13,7 +13,10 @@ class SimilarityChecker:
     def file_parser(self):
         try:
             lin1 = open(self.file1).readlines()
+            lin1 = [s.strip() for s in lin1]
+
             lin2 = open(self.file2).readlines()
+            lin2 = [s.strip() for s in lin2]
         except IOError as e:
             print("Error: " + str(e))
             _exit(1)
@@ -24,12 +27,11 @@ class SimilarityChecker:
         file1_lines, file2_lines = self.file_parser()
         hash_map = {}
         for i in range(len(file1_lines)):
-            try:
-                if file1_lines[i] == file2_lines[i]:
-                    hash_map[i] = i
-            except IndexError:
-                # one file is shorter in length than another
-                break
+            for j in range(len(file2_lines)):
+                if file1_lines[i] == file2_lines[j] and file1_lines[i] != "":
+                    hash_map[i+1] = j+1
+            
+
         return hash_map
     def parse(self):
         hash_map = self.basic_line_comp()
