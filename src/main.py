@@ -28,8 +28,11 @@ class SimilarityChecker:
         hash_map = {}
         for i in range(len(file1_lines)):
             for j in range(len(file2_lines)):
-                if file1_lines[i] == file2_lines[j] and file1_lines[i] != "":
+                if file1_lines[i] == file2_lines[j]:
+                    if file1_lines[i] == "":
+                        continue
                     hash_map[i+1] = j+1
+                    break
             
 
         return hash_map
