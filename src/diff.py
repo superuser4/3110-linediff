@@ -1,3 +1,4 @@
+import math
 ### algorithm
 class SimilarityScore:
     line1 = ""
@@ -48,7 +49,17 @@ class SimilarityScore:
            dot += i * j
        
        ### Compute the magnitude of each vec
+       old_magn = 0
+       for i in old_chunk_vec:
+           old_magn += i * i
+       old_magn = math.sqrt(old_magn) 
+
+       new_magn = 0
+       for i in new_chunk_vec:
+           new_magn += i * i
+       new_magn = math.sqrt(new_magn)
 
        ### Divide dot product by product of magnitudes
-
+       sim = dot / (abs(old_magn) * abs(new_magn))
+       return sim
 
