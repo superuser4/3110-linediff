@@ -21,7 +21,7 @@ class SimilarityChecker:
         return lin1, lin2
 
 
-    def basic_line_comp(self):
+    def line_comp(self):
         file1_lines, file2_lines = self.file_parser()
         hash_map = {}
         
@@ -37,16 +37,17 @@ class SimilarityChecker:
                     hash_map[i+1] = j+1
 
                     # delete matching lines from new list 
-                    del(file2_lines[i])
+                    del(file1_lines[i])
+                    del(file2_lines[j])
                     break
         
-        # now all matching lines are deleted from both lists, only changed/added lines are left (on the right)
-        # TODO if line doesn't match 1-1 we check this line against all possible new lines within appropiate distance using LHDiff algorithm
-        # TODO Somehow gather all new lines for comparison against this line            
+        # deleting the other lines removed original context similarity? possible mess up?
+        # if line doesn't match 1-1 we check this line against all possible new lines within appropiate distance using LHDiff algorithm
+
 
         return hash_map
     def check(self):
-        hash_map = self.basic_line_comp()
+        hash_map = self.line_comp()
         print("Line matches:")
         for key, val in hash_map.items():
             print(f"{key} - {val}")

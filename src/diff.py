@@ -8,7 +8,7 @@ class SimilarityScore:
         self.line2 = line2
     
     ## returns a float between 0.0 - 1.0 --> Similarity Score
-    def lhdiff_check(self):
+    def lhdiff_check(self, left, right):
         ## Formula
         ## comb_sim = 0.6 * levenshtein_distance(left, right) + 0.4 * cosine_similarity(left_vec, right_vec)
 
