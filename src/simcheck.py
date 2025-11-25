@@ -25,8 +25,10 @@ class SimilarityChecker:
         file1_lines, file2_lines = self.file_parser()
         hash_map = {}
         
-        # TODO use hamming distance for line comparison instead of checking every line
         for i in range(len(file1_lines)):
+            left_context_vec = []
+            right_context_vec = []
+
             for j in range(len(file2_lines)):
                 if file1_lines[i] == file2_lines[j]:
                     if file1_lines[i] == "":
@@ -34,18 +36,16 @@ class SimilarityChecker:
                     
                     hash_map[i+1] = j+1
 
-                    # delete matching lines from our list so they don't crowd non-matching lines hamming distance analysis
-                    del(file1_lines[i])
-                    del(file1_lines[i])
-
+                    # delete matching lines from new list 
+                    del(file2_lines[i])
                     break
-                # line doesn't match, check similarity score instead
-                else:
-                    None
-            
+        
+        # now all matching lines are deleted from both lists, only changed/added lines are left (on the right)
+        # TODO if line doesn't match 1-1 we check this line against all possible new lines within appropiate distance using LHDiff algorithm
+        # TODO Somehow gather all new lines for comparison against this line            
 
         return hash_map
-    def parse(self):
+    def check(self):
         hash_map = self.basic_line_comp()
         print("Line matches:")
         for key, val in hash_map.items():

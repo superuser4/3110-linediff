@@ -8,7 +8,7 @@ def main():
         _exit(1)
     
     checker = simcheck.SimilarityChecker(sys.argv[1], sys.argv[2])
-    checker.parse()
+    checker.check()
     
 if __name__ == "__main__":
     main()
