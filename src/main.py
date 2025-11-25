@@ -33,6 +33,9 @@ class SimilarityChecker:
                         continue
                     hash_map[i+1] = j+1
                     break
+                # line doesn't match, check similarity score instead
+                else:
+                    None
             
 
         return hash_map
