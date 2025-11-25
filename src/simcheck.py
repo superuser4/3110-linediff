@@ -41,8 +41,9 @@ class SimilarityChecker:
                     del(file2_lines[j])
                     break
         
-        # deleting the other lines removed original context similarity? possible mess up?
         # if line doesn't match 1-1 we check this line against all possible new lines within appropiate distance using LHDiff algorithm
+        # deleting the other lines removed original context similarity? possible mess up?
+        # run everything through LHDiff check instead of manual check?
 
 
         return hash_map
