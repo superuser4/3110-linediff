@@ -3,25 +3,29 @@ import math
 class SimilarityScore:
     line1 = ""
     line2 = ""
+    left_context_vec = []
+    right_context_vec = []
 
-    def __init__(self,line1, line2):
+    def __init__(self,line1, line2, left_context_vec, right_context_vec):
         self.line1 = line1
         self.line2 = line2
+        self.left_context_vec = left_context_vec
+        self.right_context_vec= right_context_vec
     
     ## returns a float between 0.0 - 1.0 --> Similarity Score
-    #def lhdiff_check(self, left, right):
+    #def lhdiff_check(self):
         ## Formula
-        ## comb_sim = 0.6 * levenshtein_distance(left, right) + 0.4 * cosine_similarity(left_vec, right_vec)
+        ## comb_sim = 0.6 * levenshtein_distance() + 0.4 * cosine_similarity()
 
-    #def levenshtein_distance(self,left, right):
+    #def levenshtein_distance(self):
     
     # 3 lines for both vec
-    def cosine_similarity(self, left_context_vec, right_context_vec):
+    def cosine_similarity(self):
        comb_vocab = []
        old_chunk = ""
        new_chunk = ""
 
-       for line1, line2 in zip(left_context_vec, right_context_vec):
+       for line1, line2 in zip(self.left_context_vec, self.right_context_vec):
            local_vocab = line1.split()
            old_chunk += " ".join(local_vocab) + " "
            comb_vocab += local_vocab
