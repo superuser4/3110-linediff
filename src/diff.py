@@ -41,6 +41,14 @@ class SimilarityScore:
            for word in new_chunk.split():
                if comb_vocab[vocab_idx] == word:
                    new_chunk_vec[vocab_idx] += 1
+       
+       ### Computing dot product of two vectors
+       dot = 0
+       for i,j in zip(old_chunk_vec, new_chunk_vec):
+           dot += i * j
+       
+       ### Compute the magnitude of each vec
 
+       ### Divide dot product by product of magnitudes
 
 
