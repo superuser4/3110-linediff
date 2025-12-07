@@ -87,6 +87,9 @@ class SimilarityScore:
        new_magn = math.sqrt(new_magn)
 
        ### Divide dot product by product of magnitudes
-       sim = dot / (abs(old_magn) * abs(new_magn))
+       if old_magn == 0 or new_magn == 0:
+           sim = 0.0
+       else:
+          sim = dot / (abs(old_magn) * abs(new_magn))
        return sim
 
