@@ -13,11 +13,34 @@ class SimilarityScore:
         self.right_context_vec= right_context_vec
     
     ## returns a float between 0.0 - 1.0 --> Similarity Score
-    #def lhdiff_check(self):
-        ## Formula
-        ## comb_sim = 0.6 * levenshtein_distance() + 0.4 * cosine_similarity()
+    def lhdiff_check(self):
+        dist = self.levenshtein_distance()
+        max_len = max(len(self.line1), len(self.line2))
+        lev_sim = 1- (dist / max_len) if max_len >0 else 1.0
+        comb_sim = 0.6 * lev_sim+ 0.4 * self.cosine_similarity()
+        return comb_sim
 
-    #def levenshtein_distance(self):
+    def levenshtein_distance(self):
+        m, n = len(self.line1), len(self.line2)
+        D = [[0]*(n+1) for _ in range(m+1)]
+
+        for i in range(m+1):
+            D[i][0] = i
+        for j in range(n+1):
+            D[0][j] = j
+
+        for i in range(1, m+1):
+            for j in range(1, n+1):
+                if self.line1[i-1] == self.line2[j-1]:
+                    cost = 0
+                else:
+                    cost = 1
+                D[i][j] = min(
+                        D[i-1][j] +1,
+                        D[i][j-1] + 1,
+                        D[i-1][j-1] + cost,
+                )
+        return D[m][n]
     
     # 3 lines for both vec
     def cosine_similarity(self):

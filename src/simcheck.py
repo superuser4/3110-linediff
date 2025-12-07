@@ -24,24 +24,22 @@ class SimilarityChecker:
     def line_comp(self):
         file1_lines, file2_lines = self.file_parser()
         hash_map = {}
+        used_file2 = set()
         
         for i in range(len(file1_lines)):
             left_context_vec = []
             right_context_vec = []
 
             for j in range(len(file2_lines)):
+                if j in used_file2:
+                    break
                 if file1_lines[i] == file2_lines[j]:
                     if file1_lines[i] == "":
                         continue
                     
                     hash_map[i+1] = j+1
-
-                    # delete matching lines from new list 
-                    del(file1_lines[i])
-                    del(file2_lines[j])
                     break
         
-        # if line doesn't match 1-1 we check this line against all possible new lines within appropiate distance using LHDiff algorithm
 
         return hash_map
     def check(self):
