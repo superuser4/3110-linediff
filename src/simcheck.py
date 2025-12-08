@@ -47,15 +47,8 @@ class SimilarityChecker:
             best_j = None
             best_scor = 0
            
-            j = i
-            if i > 5:
-                j -= 5
-            else:
-                j-=i
-            while True:
-                if j > i+5:
-                    break
-
+            
+            for j, line2 in enumerate(file2_lines):
                 left_context_file1 = file1_lines[max(0, i-1):i]
                 right_context_file1 = file1_lines[i+1:min(len(file1_lines), i+2)]
 
