@@ -92,4 +92,39 @@ class SimilarityScore:
        else:
           sim = dot / (abs(old_magn) * abs(new_magn))
        return sim
+    
+    
+    def hamming_distance(a: str, b: str) -> int:
+    #Takes two strings, counts the difference and returns the answers as an Int
+    #Strings do not have to be the same length, if one string is longer than blanks will count as differences
+    #Example 1: a = 1111 , b = 1100, answer = 2
+    #Example 2: a = 11111, b = 1100, answer = 3
+        answer = 0
 
+        if len(a) != len(b):
+            
+            if(len(a) > len(b)):
+                    tempB = b
+                    temp = len(b)
+
+                    while temp != len(a):
+                            tempB += "2"
+                            temp +=1
+                    b = tempB
+            else:
+                    tempA = a
+                    temp = len(a)
+
+                    while temp != len(b):
+                            tempA += "2"
+                            temp +=1
+                    a = tempA
+        
+        index = 0
+
+        for char in a:
+                if char != b[index]:
+                    answer += 1
+                index +=1
+
+        return answer
