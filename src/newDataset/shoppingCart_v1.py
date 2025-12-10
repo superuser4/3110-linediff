@@ -12,7 +12,7 @@ add_item("Apples")
 add_item("Bananas")
 add_item("Grapes")
 
-print("Cart contains:", cart)
+print("Current cart:", cart)
 print("Count", total_items())
 
 print("Done shopping.")

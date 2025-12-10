@@ -1,3 +1,4 @@
+#basic shopping cart
 cart = []
 
 def add_item(item):
