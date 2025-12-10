@@ -1,5 +1,6 @@
 from os import _exit 
 import diff 
+import simhash
 
 class SimilarityChecker:
     file1 = ""
@@ -8,6 +9,12 @@ class SimilarityChecker:
     def __init__(self, file1, file2):
         self.file1 = file1
         self.file2 = file2
+
+    def build_context(self, lines, idx, window=2):
+        start = max(0, idx - window)
+        end = min(len(lines), idx + window + 1)
+        context = [lines[k] for k in range(start, end) if k != idx]
+        return context
 
     def file_parser(self):
         try:
@@ -21,56 +28,57 @@ class SimilarityChecker:
             _exit(1)
         return lin1, lin2
 
-
     def line_comp(self, similar_threshold=0.8):
         file1_lines, file2_lines = self.file_parser()
         hash_map = {}
         used_file2 = set()
-        
+
+        #1️⃣ Exact matches
         for i, line1 in enumerate(file1_lines):
-            if line1 == "":
+            if not line1.strip():
                 continue
             for j, line2 in enumerate(file2_lines):
                 if j in used_file2:
                     continue
-                if line1==line2:
+                if line1 == line2:
                     hash_map[i+1] = j+1
                     used_file2.add(j)
                     break
 
-        ### For approximate matches
+        # Approx matches using SimHash + similarity
         for i, line1 in enumerate(file1_lines):
-            ## alr matched or empty line
-            if (i+1) in hash_map or line1== "":
+            if (i+1) in hash_map or not line1.strip():
                 continue
-            
-            best_j = None
-            best_scor = 0
-           
-            
+            # SimHash Hamming distances
+            hamminged_map = {}
             for j, line2 in enumerate(file2_lines):
-                left_context_file1 = file1_lines[max(0, i-1):i]
-                right_context_file1 = file1_lines[i+1:min(len(file1_lines), i+2)]
+                if j in used_file2:
+                    continue
+                simhasher = simhash.SimHash(line1, line2)
+                hamminged_map[j] = simhasher.hamming_distance()
 
-                score_o = diff.SimilarityScore(
-                        line1=line1,
-                        line2=line2,
-                        left_context_vec=left_context_file1,
-                        right_context_vec=right_context_file1
-                )
-                sim_score = score_o.lhdiff_check()
-                if sim_score > best_scor:
-                    best_scor = sim_score
-                    best_j = j
-                j += 1
+            # Top 15 candidates
+            candidates = sorted(hamminged_map.items(), key=lambda x: x[1])[:15]
 
-            if best_j is not None and best_scor >= similar_threshold:
-                hash_map[i+1] = best_j+1
-                used_file2.add(best_j)
+            best_score = -1.0
+            best_loc = None
+            for (j, _) in candidates:
+                left_vec  = self.build_context(file1_lines, i)
+                right_vec = self.build_context(file2_lines, j)
+                line2 = file2_lines[j]
+                score_obj = diff.SimilarityScore(line1, line2, left_vec, right_vec)
+                sim_score = score_obj.lhdiff_check()
+
+                if sim_score > best_score:
+                    best_score = sim_score
+                    best_loc = j
+
+            if best_loc is not None and best_score >= similar_threshold:
+                hash_map[i+1] = best_loc + 1
+                used_file2.add(best_loc)
+
         return hash_map
-
-    
-         
+     
     def check(self):
         hash_map = self.line_comp()
         print("Line matches:")
