@@ -54,7 +54,7 @@ class SimilarityChecker:
                 if j in used_file2:
                     continue
                 simhasher = simhash.SimHash(line1, line2)
-                hamminged_map[j] = simhasher.hamming_distance()
+                hamminged_map[j] = simhasher.xor_hamming_dist()
 
             # Top 15 candidates
             # Check which one has the highest similarity score, add to mappings if above threshold

@@ -5,18 +5,46 @@ class SimHash():
         self.line1 = line1
         self.line2 = line2
     
+    # Basic 64 bit hashing trick, similar to Java's String.hashCode
     def str_to_hash(self, string):
+        x=0
+        for c in string:
+            x = x *31 +ord(c)
+        return x & 0xffffffffffffffff
+
     def bit_simhash(self, string):
+        hashbits = 64
+        bit_w_vec = [0] * hashbits
+
+        words = string.split()
+        for w in words:
+            ha = self.str_to_hash(w)
+            for i in range(hashbits):
+                bitmask = 1 << i
+                if ha & bitmask:
+                    bit_w_vec[i] += 1
+                else:
+                    bit_w_vec[i] -= 1
+        finger_print = 0
+        for i in range(hashbits):
+            if bit_w_vec[i] >= 0:
+                finger_print |= 1 << i
+        return finger_print
+
+
     def xor_hamming_dist(self):
         hash1 = self.bit_simhash(self.line1)
         hash2 = self.bit_simhash(self.line2)
         
+        # Find differing bits
         xor = hash1 ^ hash2
         
+        # Count them
         total = 0
         while xor:
             total += 1
-            x &= x -1
+            xor &= xor -1
+        # return the number of bits where hash1 and hash2 differ
         return total
 
 
