@@ -4,11 +4,27 @@ class SimHash():
     def __init__(self, line1, line2):
         self.line1 = line1
         self.line2 = line2
+    
+    def str_to_hash(self, string):
+    def bit_simhash(self, string):
+    def xor_hamming_dist(self):
+        hash1 = self.bit_simhash(self.line1)
+        hash2 = self.bit_simhash(self.line2)
+        
+        xor = hash1 ^ hash2
+        
+        total = 0
+        while xor:
+            total += 1
+            x &= x -1
+        return total
+
+
     def hamming_distance(self) -> int:
-    #Takes two strings, counts the difference and returns the answers as an Int
-    #Strings do not have to be the same length, if one string is longer than blanks will count as differences
-    #Example 1: a = 1111 , b = 1100, answer = 2
-    #Example 2: a = 11111, b = 1100, answer = 3
+        #Takes two strings, counts the difference and returns the answers as an Int
+        #Strings do not have to be the same length, if one string is longer than blanks will count as differences
+        #Example 1: a = 1111 , b = 1100, answer = 2
+        #Example 2: a = 11111, b = 1100, answer = 3
         answer = 0
 
         if len(self.line1) != len(self.line2):

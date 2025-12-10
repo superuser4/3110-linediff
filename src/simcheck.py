@@ -57,6 +57,7 @@ class SimilarityChecker:
                 hamminged_map[j] = simhasher.hamming_distance()
 
             # Top 15 candidates
+            # Check which one has the highest similarity score, add to mappings if above threshold
             candidates = sorted(hamminged_map.items(), key=lambda x: x[1])[:15]
 
             best_score = -1.0
