@@ -15,25 +15,25 @@ class SimHash():
             
             if(len(self.line1) > len(self.line2)):
                     tempB = self.line2
-                    temp = len(b)
+                    temp = len(self.line2)
 
-                    while temp != len(a):
+                    while temp != len(self.line1):
                             tempB += "2"
                             temp +=1
-                    b = tempB
+                    self.line2 = tempB
             else:
-                    tempA = a
-                    temp = len(a)
+                    tempA = self.line1
+                    temp = len(self.line1)
 
-                    while temp != len(b):
+                    while temp != len(self.line2):
                             tempA += "2"
                             temp +=1
-                    a = tempA
+                    self.line1 = tempA
         
         index = 0
 
-        for char in a:
-                if char != b[index]:
+        for char in self.line1:
+                if char != self.line2[index]:
                     answer += 1
                 index +=1
 
