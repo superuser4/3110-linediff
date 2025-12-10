@@ -10,7 +10,7 @@ class SimilarityChecker:
         self.file1 = file1
         self.file2 = file2
 
-    def build_context(self, lines, idx, window=2):
+    def build_context(self, lines, idx, window=3):
         start = max(0, idx - window)
         end = min(len(lines), idx + window + 1)
         context = [lines[k] for k in range(start, end) if k != idx]
