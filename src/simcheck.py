@@ -33,7 +33,6 @@ class SimilarityChecker:
         hash_map = {}
         used_file2 = set()
 
-        #1️⃣ Exact matches
         for i, line1 in enumerate(file1_lines):
             if not line1.strip():
                 continue
