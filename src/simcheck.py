@@ -73,7 +73,7 @@ class SimilarityChecker:
             
         return content_hashes, context_hashes
 
-    def line_comp(self, similar_threshold=0.55):  # Lowered threshold from 0.8
+    def line_comp(self, similar_threshold=0.55):
         file1_lines, file2_lines = self.file_parser()
         hash_map = {}
         used_file2 = set()
