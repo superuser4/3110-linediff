@@ -1,6 +1,7 @@
 from os import _exit 
 import diff 
 import simhash
+import re
 
 class SimilarityChecker:
     file1 = ""
@@ -16,23 +17,52 @@ class SimilarityChecker:
         context = [lines[k] for k in range(start, end) if k != idx]
         return context
 
+    def normalize_line(self,line: str) -> str:
+        line=line.strip()
+        line=re.sub(r"\s+", " ", line)
+        line=re.sub(r"\s*([=+\-*/<>!]+)\s*", r"\1 ", line)
+        line=re.sub(r"\s+", " ", line)
+        return line
+    
     def file_parser(self):
         try:
-            lin1 = open(self.file1).readlines()
-            lin1 = [s.strip() for s in lin1]
-
-            lin2 = open(self.file2).readlines()
-            lin2 = [s.strip() for s in lin2]
+            with open(self.file1, "r") as f1:
+                lin1 = [self.normalize_line(line) for line in f1.readlines()]
+            with open(self.file2, "r") as f2:
+                lin2 = [self.normalize_line(line) for line in f2.readlines()]
         except IOError as e:
-            print("Error: " + str(e))
+            print("Error loading file:", str(e))
             _exit(1)
         return lin1, lin2
 
-    def line_comp(self, similar_threshold=0.8):
+    def compute_hashes(self, lines):
+        """Compute both content and context SimHashes for each line"""
+        content_hashes = []
+        context_hashes = []
+        
+        for i, line in enumerate(lines):
+            # Content hash
+            content_hash = simhash.SimHash(line, "").compute_hash(line)
+            content_hashes.append(content_hash)
+            
+            # Context hash
+            context_lines = self.build_context(lines, i)
+            context_text = " ".join(context_lines)
+            context_hash = simhash.SimHash(context_text, "").compute_hash(context_text)
+            context_hashes.append(context_hash)
+            
+        return content_hashes, context_hashes
+
+    def line_comp(self, similar_threshold=0.6):  # Lowered threshold from 0.8
         file1_lines, file2_lines = self.file_parser()
         hash_map = {}
         used_file2 = set()
 
+        # Phase 1: Compute SimHashes for all lines
+        f1_content_hashes, f1_context_hashes = self.compute_hashes(file1_lines)
+        f2_content_hashes, f2_context_hashes = self.compute_hashes(file2_lines)
+
+        # Phase 2: Exact matches first
         for i, line1 in enumerate(file1_lines):
             if not line1.strip():
                 continue
@@ -44,45 +74,89 @@ class SimilarityChecker:
                     used_file2.add(j)
                     break
 
-        # Approx matches using SimHash + similarity
+        # Phase 3: Use SimHash to find candidate matches
         for i, line1 in enumerate(file1_lines):
             if (i+1) in hash_map or not line1.strip():
                 continue
-            # SimHash Hamming distances
-            hamminged_map = {}
+
+            # Find top 15 candidates based on combined Hamming distance
+            candidates = []
             for j, line2 in enumerate(file2_lines):
                 if j in used_file2:
                     continue
-                simhasher = simhash.SimHash(line1, line2)
-                hamminged_map[j] = simhasher.xor_hamming_dist()
-
-            # Top 15 candidates
-            # Check which one has the highest similarity score, add to mappings if above threshold
-            candidates = sorted(hamminged_map.items(), key=lambda x: x[1])[:15]
-
+                    
+                # Combined Hamming distance (0.6*content + 0.4*context)
+                content_hamming = self.hamming_dist(f1_content_hashes[i], f2_content_hashes[j])
+                context_hamming = self.hamming_dist(f1_context_hashes[i], f2_context_hashes[j])
+                combined_hamming = 0.6 * content_hamming + 0.4 * context_hamming
+                
+                candidates.append((j, combined_hamming))
+            
+            # Sort by Hamming distance and take top 15
+            candidates.sort(key=lambda x: x[1])
+            top_candidates = [j for j, _ in candidates[:15]]
+            
+            # Phase 4: Detailed comparison on top candidates
             best_score = -1.0
             best_loc = None
-            for (j, _) in candidates:
-                left_vec  = self.build_context(file1_lines, i)
+            is_split = False
+            split_lines = []
+            
+            for j in top_candidates:
+                if j in used_file2:
+                    continue
+                
+                # Check single line match
+                left_vec = self.build_context(file1_lines, i)
                 right_vec = self.build_context(file2_lines, j)
-                line2 = file2_lines[j]
-                score_obj = diff.SimilarityScore(line1, line2, left_vec, right_vec)
+                score_obj = diff.SimilarityScore(line1, file2_lines[j], left_vec, right_vec)
                 sim_score = score_obj.lhdiff_check()
-
+                
                 if sim_score > best_score:
                     best_score = sim_score
                     best_loc = j
-
+                    is_split = False
+                
+                # Check line splitting (1-4 lines)
+                for k in range(1, 4):
+                    if j + k >= len(file2_lines):
+                        break
+                    
+                    merged_line = " ".join(file2_lines[j:j+k+1])
+                    split_score_obj = diff.SimilarityScore(line1, merged_line, left_vec, right_vec)
+                    split_score = split_score_obj.lhdiff_check()
+                    
+                    if split_score > best_score:
+                        best_score = split_score
+                        best_loc = j
+                        is_split = True
+                        split_lines = list(range(j, j+k+1))
+                
+            # Accept match if above threshold
             if best_loc is not None and best_score >= similar_threshold:
-                hash_map[i+1] = best_loc + 1
-                used_file2.add(best_loc)
+                if is_split and split_lines:
+                    # Map to first line of split
+                    hash_map[i+1] = split_lines[0] + 1
+                    # Mark all split lines as used
+                    for line_num in split_lines:
+                        used_file2.add(line_num)
+                else:
+                    hash_map[i+1] = best_loc + 1
+                    used_file2.add(best_loc)
 
         return hash_map
+    
+    def hamming_dist(self, hash1, hash2):
+        """Calculate Hamming distance between two integers"""
+        xor = hash1 ^ hash2
+        total = 0
+        while xor:
+            total += 1
+            xor &= xor - 1
+        return total
      
     def check(self):
         hash_map = self.line_comp()
         print("Line matches:")
         for key, val in hash_map.items():
             print(f"{key} - {val}")
-
-

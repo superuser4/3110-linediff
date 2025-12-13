@@ -40,7 +40,7 @@ def compare_results(program_output, ground_truth):
     accuracy = correct / total
     return accuracy
 
-def batch_test_evaluation_dataset(root_dir="EvaluationDataset/eclipseTest/", threshold=0.8):
+def batch_test_evaluation_dataset(root_dir="EvaluationDataset/eclipseTest/"):
     all_files = os.listdir(root_dir)
     java1_files = [f for f in all_files if f.endswith("_1.java")]
     java2_files = [f for f in all_files if f.endswith("_2.java")]
@@ -71,7 +71,7 @@ def batch_test_evaluation_dataset(root_dir="EvaluationDataset/eclipseTest/", thr
             continue
 
         checker = SimilarityChecker(files["file1"], files["file2"])
-        program_output = checker.line_comp(similar_threshold=threshold)
+        program_output = checker.line_comp()
         ground_truth = parse_ground_truth(files["xml"])
         acc = compare_results(program_output, ground_truth)
         all_accuracies.append(acc)
