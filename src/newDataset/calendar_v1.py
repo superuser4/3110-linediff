@@ -22,5 +22,8 @@ add_event("Meeting", "Monday")
 add_event("Gym", "Tuesday")
 add_event("Doctor", "Friday")
 
+
+
+
 remove_event("Gym")
 list_events()
