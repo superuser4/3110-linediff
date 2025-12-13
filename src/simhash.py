@@ -19,7 +19,6 @@ class SimHash():
         return tokens
     
     def compute_hash(self, text: str) -> int:
-        """Compute and return the SimHash value (64-bit integer), NOT the distance"""
         tokens = self.tokenize(text)
         if not tokens:
             return 0

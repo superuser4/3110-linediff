@@ -1,5 +1,4 @@
 import math
-### algorithm
 class SimilarityScore:
     line1 = ""
     line2 = ""

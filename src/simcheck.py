@@ -72,6 +72,90 @@ class SimilarityChecker:
             context_hashes.append(context_hash)
             
         return content_hashes, context_hashes
+    def debug_simhash_candidates(self, old_line_num):
+        """Debug SimHash candidate selection"""
+        old_lines, new_lines = self.file_parser()
+        
+        # Recompute hashes
+        f1_content_hashes, f1_context_hashes = self.compute_hashes(old_lines)
+        f2_content_hashes, f2_context_hashes = self.compute_hashes(new_lines)
+        
+        i = old_line_num - 1
+        line1 = old_lines[i]
+        
+        print(f"\n=== SimHash Debug for Old Line {old_line_num} ===")
+        print(f"Old line: '{line1}'")
+        
+        # Calculate Hamming distances to all new lines
+        distances = []
+        for j, line2 in enumerate(new_lines):
+            if not line2.strip():
+                continue
+            
+            content_hamming = self.hamming_dist(f1_content_hashes[i], f2_content_hashes[j])
+            context_hamming = self.hamming_dist(f1_context_hashes[i], f2_context_hashes[j])
+            combined_hamming = 0.6 * content_hamming + 0.4 * context_hamming
+            
+            distances.append((j, combined_hamming, line2[:50]))
+        
+        # Sort and show top 20
+        distances.sort(key=lambda x: x[1])
+        print(f"\nTop 20 SimHash candidates (lower Hamming distance = better):")
+        for rank, (j, dist, preview) in enumerate(distances[:20]):
+            print(f"Rank {rank+1}: New line {j+1}, Hamming={dist:.1f}, Preview='{preview}...'")
+        
+        # Check where the correct line (line 4 in new file) ranks
+        correct_j = old_line_num - 1  # Should be line 4 -> line 4
+        if correct_j < len(new_lines):
+            for j, dist, preview in distances:
+                if j == correct_j:
+                    print(f"\nCORRECT LINE (new line {j+1}) is at rank {distances.index((j, dist, preview))+1}")
+                    print(f"Hamming distance: {dist}")
+                    break
+                
+    def debug_single_match(self, old_line_num, new_line_num):
+        old_lines, new_lines = self.file_parser()
+        
+        old_idx = old_line_num - 1
+        new_idx = new_line_num - 1
+        
+        if old_idx >= len(old_lines) or new_idx >= len(new_lines):
+            print(f"Invalid line numbers: {old_line_num}, {new_line_num}")
+            return
+        
+        old_line = old_lines[old_idx]
+        new_line = new_lines[new_idx]
+        
+        print(f"\n=== Debugging match: Old line {old_line_num} -> New line {new_line_num} ===")
+        print(f"Old line: '{old_line}'")
+        print(f"New line: '{new_line}'")
+        
+        # Check normalization
+        norm_old = self.normalize_line(old_line)
+        norm_new = self.normalize_line(new_line)
+        print(f"\nAfter normalization:")
+        print(f"Old: '{norm_old}'")
+        print(f"New: '{norm_new}'")
+        print(f"Exact match: {norm_old == norm_new}")
+        
+        # Check similarity
+        left_vec = self.build_context(old_lines, old_idx)
+        right_vec = self.build_context(new_lines, new_idx)
+        
+        print(f"\nContext sizes: left={len(left_vec)}, right={len(right_vec)}")
+        print("Left context lines:", left_vec)
+        print("Right context lines:", right_vec)
+        
+        score_obj = diff.SimilarityScore(old_line, new_line, left_vec, right_vec)
+        similarity = score_obj.lhdiff_check()
+        print(f"\nTotal similarity score: {similarity:.3f}")
+        
+        # Check individual components
+        lev_dist = score_obj.levenshtein_distance()
+        max_len = max(len(old_line), len(new_line))
+        lev_sim = 1 - (lev_dist / max_len) if max_len > 0 else 1.0
+        print(f"Levenshtein similarity: {lev_sim:.3f}")
+        print(f"Cosine similarity: {score_obj.cosine_similarity():.3f}")
 
     def calculate_adaptive_threshold(self, old_lines, new_lines):
         old_nonblank = sum(1 for line in old_lines if line.strip())
@@ -92,6 +176,7 @@ class SimilarityChecker:
         self.calculate_adaptive_threshold(file1_lines, file2_lines)
         hash_map = {}
         used_file2 = set()
+        
 
         # Phase 1: Compute SimHashes for all lines
         f1_content_hashes, f1_context_hashes = self.compute_hashes(file1_lines)
