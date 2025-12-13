@@ -9,16 +9,15 @@ class SimHash():
         self.line1 = line1
         self.line2 = line2
     
-    def tokenize(self, line: str) -> list[str]:
-        token_pattern = r"""
-            [A-Za-z_]\w*         |  # identifiers, keywords
-            \d+\.\d+             |  # floats
-            \d+                  |  # ints
-            ==|!=|<=|>=|\+=|-=|\*=|/=|&&|\|\| | # multi-char operators
-            [{}()\[\];,<>+\-*/=]    # single-char tokens
-        """
-        return re.findall(token_pattern, line, flags=re.VERBOSE)
-
+    def tokenize(self, text: str) -> list[str]:
+        """Simpler, more robust tokenizer"""
+        if not text:
+            return []
+    
+        # Simple: split by whitespace and keep punctuation as separate tokens
+        tokens = re.findall(r'\b\w+\b|\S', text)  # \w+ for words, \S for punctuation
+        return tokens
+    
     def compute_hash(self, text: str) -> int:
         """Compute and return the SimHash value (64-bit integer), NOT the distance"""
         tokens = self.tokenize(text)

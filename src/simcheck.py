@@ -26,14 +26,34 @@ class SimilarityChecker:
     
     def file_parser(self):
         try:
-            with open(self.file1, "r") as f1:
-                lin1 = [self.normalize_line(line) for line in f1.readlines()]
-            with open(self.file2, "r") as f2:
-                lin2 = [self.normalize_line(line) for line in f2.readlines()]
+            with open(self.file1, "r", encoding='utf-8', errors='ignore') as f1:
+                lines1 = f1.readlines()
+            with open(self.file2, "r", encoding='utf-8', errors='ignore') as f2:
+                lines2 = f2.readlines()
         except IOError as e:
             print("Error loading file:", str(e))
             _exit(1)
-        return lin1, lin2
+    
+        # Normalize but preserve empty lines as placeholders
+        normalized1 = []
+        normalized2 = []
+        
+        for line in lines1:
+            norm = self.normalize_line(line)
+            # Keep empty lines but mark them
+            if not norm.strip():
+                normalized1.append("")  # Empty placeholder
+            else:
+                normalized1.append(norm)
+        
+        for line in lines2:
+            norm = self.normalize_line(line)
+            if not norm.strip():
+                normalized2.append("")
+            else:
+                normalized2.append(norm)
+        
+        return normalized1, normalized2
 
     def compute_hashes(self, lines):
         """Compute both content and context SimHashes for each line"""
@@ -53,7 +73,7 @@ class SimilarityChecker:
             
         return content_hashes, context_hashes
 
-    def line_comp(self, similar_threshold=0.6):  # Lowered threshold from 0.8
+    def line_comp(self, similar_threshold=0.55):  # Lowered threshold from 0.8
         file1_lines, file2_lines = self.file_parser()
         hash_map = {}
         used_file2 = set()
@@ -132,7 +152,7 @@ class SimilarityChecker:
                         is_split = True
                         split_lines = list(range(j, j+k+1))
                 
-            # Accept match if above threshold
+
             if best_loc is not None and best_score >= similar_threshold:
                 if is_split and split_lines:
                     # Map to first line of split

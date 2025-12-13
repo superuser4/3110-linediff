@@ -48,14 +48,16 @@ class SimilarityScore:
        old_chunk = ""
        new_chunk = ""
 
-       for line1, line2 in zip(self.left_context_vec, self.right_context_vec):
+       for line1 in self.left_context_vec:
            local_vocab = line1.split()
            old_chunk += " ".join(local_vocab) + " "
            comb_vocab += local_vocab
 
+       for line2 in self.right_context_vec:
            local_vocab2 = line2.split()
            new_chunk += " ".join(local_vocab2) + " "
            comb_vocab += local_vocab2
+
 
        comb_vocab = list(set(comb_vocab))
 
