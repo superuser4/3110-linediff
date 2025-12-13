@@ -6,6 +6,7 @@ import re
 class SimilarityChecker:
     file1 = ""
     file2 = ""
+    sim_thres = 0.6
 
     def __init__(self, file1, file2):
         self.file1 = file1
@@ -56,7 +57,6 @@ class SimilarityChecker:
         return normalized1, normalized2
 
     def compute_hashes(self, lines):
-        """Compute both content and context SimHashes for each line"""
         content_hashes = []
         context_hashes = []
         
@@ -73,8 +73,23 @@ class SimilarityChecker:
             
         return content_hashes, context_hashes
 
-    def line_comp(self, similar_threshold=0.55):
+    def calculate_adaptive_threshold(self, old_lines, new_lines):
+        old_nonblank = sum(1 for line in old_lines if line.strip())
+        new_nonblank = sum(1 for line in new_lines if line.strip())
+    
+        # If one file has way more lines, be more permissive
+        ratio = min(old_nonblank, new_nonblank) / max(old_nonblank, new_nonblank)
+    
+        if ratio < 0.5:  # Files very different in size
+            self.sim_thres = 0.5
+    
+        if old_nonblank < 10 or new_nonblank < 10:
+            self.sim_thres = 0.65
+    
+        self.sim_thres = 0.55
+    def line_comp(self):
         file1_lines, file2_lines = self.file_parser()
+        self.calculate_adaptive_threshold(file1_lines, file2_lines)
         hash_map = {}
         used_file2 = set()
 
@@ -99,20 +114,19 @@ class SimilarityChecker:
             if (i+1) in hash_map or not line1.strip():
                 continue
 
-            # Find top 15 candidates based on combined Hamming distance
+            # find top 15
             candidates = []
             for j, line2 in enumerate(file2_lines):
                 if j in used_file2:
                     continue
                     
-                # Combined Hamming distance (0.6*content + 0.4*context)
                 content_hamming = self.hamming_dist(f1_content_hashes[i], f2_content_hashes[j])
                 context_hamming = self.hamming_dist(f1_context_hashes[i], f2_context_hashes[j])
                 combined_hamming = 0.6 * content_hamming + 0.4 * context_hamming
                 
                 candidates.append((j, combined_hamming))
             
-            # Sort by Hamming distance and take top 15
+            # sort by hamming dist and take top 15 cands 
             candidates.sort(key=lambda x: x[1])
             top_candidates = [j for j, _ in candidates[:15]]
             
@@ -153,7 +167,7 @@ class SimilarityChecker:
                         split_lines = list(range(j, j+k+1))
                 
 
-            if best_loc is not None and best_score >= similar_threshold:
+            if best_loc is not None and best_score >= self.sim_thres:
                 if is_split and split_lines:
                     # Map to first line of split
                     hash_map[i+1] = split_lines[0] + 1
