@@ -1,4 +1,4 @@
-<TEST NAME="TEMPCONVERTER" FILE="tempConverter.py">
+<TEST NAME="TEST_23" FILE="tempConverter.py">
 
   <VERSION NUMBER="1" CHECKED="TRUE">
     <LOCATION ORIG="1" NEW="1" />
