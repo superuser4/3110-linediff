@@ -1,0 +1,58 @@
+
+
+<TEST NAME="Test6" FILE="diffFile.py">
+
+<VERSION NUMBER="1" CHECKED="TRUE">
+    <LOCATION ORIG="1" NEW="1" />
+    <LOCATION ORIG="3" NEW="3" />
+    <LOCATION ORIG="5" NEW="5" />
+    <LOCATION ORIG="6" NEW="6" />
+    <LOCATION ORIG="7" NEW="7" />
+    <LOCATION ORIG="8" NEW="8" />
+    <LOCATION ORIG="9" NEW="9" />
+    <LOCATION ORIG="10" NEW="10" />
+    <LOCATION ORIG="23" NEW="13" />
+    <LOCATION ORIG="14" NEW="14" />
+    <LOCATION ORIG="15" NEW="15" />
+    <LOCATION ORIG="16" NEW="16" />
+    <LOCATION ORIG="17" NEW="17" />
+    <LOCATION ORIG="18" NEW="18" />
+    <LOCATION ORIG="21" NEW="21" />
+    <LOCATION ORIG="22" NEW="22" />
+    <LOCATION ORIG="23" NEW="23" />
+    <LOCATION ORIG="24" NEW="24" />
+</VERSION>
+
+ <VERSION NUMBER="2" CHECKED="TRUE">
+    <LOCATION ORIG="1" NEW="-1" />
+    <ALT NEW="1"/>
+    <ALT NEW="2"/>
+    <ALT NEW="3"/>
+    <ALT NEW="4"/>
+    <ALT NEW="5"/>
+    <ALT NEW="6"/>
+    <ALT NEW="7"/>
+    <ALT NEW="8"/>
+    <ALT NEW="9"/>
+    <LOCATION ORIG="3" NEW="-1" />
+    <LOCATION ORIG="5" NEW="-1" />
+    <LOCATION ORIG="6" NEW="-1" />
+    <LOCATION ORIG="7" NEW="-1" />
+    <LOCATION ORIG="8" NEW="-1" />
+    <LOCATION ORIG="9" NEW="-1" />
+    <LOCATION ORIG="10" NEW="-1" />
+    <LOCATION ORIG="23" NEW="-1" />
+    <LOCATION ORIG="14" NEW="-1" />
+    <LOCATION ORIG="15" NEW="-1" />
+    <LOCATION ORIG="16" NEW="-1" />
+    <LOCATION ORIG="17" NEW="-1" />
+    <LOCATION ORIG="18" NEW="-1" />
+    <LOCATION ORIG="21" NEW="-1" />
+    <LOCATION ORIG="22" NEW="-1" />
+    <LOCATION ORIG="23" NEW="-1" />
+    <LOCATION ORIG="24" NEW="-1" />
+    
+
+ </VERSION>
+
+</TEST>
