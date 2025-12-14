@@ -1,6 +1,6 @@
 
 
-<TEST NAME="Test6" FILE="diffFile.py">
+<TEST NAME="TEST7" FILE="diffFile.py">
 
 <VERSION NUMBER="1" CHECKED="TRUE">
     <LOCATION ORIG="1" NEW="1" />
@@ -11,7 +11,7 @@
     <LOCATION ORIG="8" NEW="8" />
     <LOCATION ORIG="9" NEW="9" />
     <LOCATION ORIG="10" NEW="10" />
-    <LOCATION ORIG="23" NEW="13" />
+    <LOCATION ORIG="13" NEW="13" />
     <LOCATION ORIG="14" NEW="14" />
     <LOCATION ORIG="15" NEW="15" />
     <LOCATION ORIG="16" NEW="16" />
