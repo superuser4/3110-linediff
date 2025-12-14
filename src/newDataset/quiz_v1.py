@@ -2,7 +2,11 @@ questions = {
     "What year did World War 2 start": "1939",
     "2 + 2 = ?": "4",
     "What colour does red and blue make:": "Purple",
-    "How many days are there in 1 year?": "365"
+    "How many days are there in 1 year?": "365",
+    "What month is Christmas celebrated in?" : "December",
+    "Who is the famous author of 'Romeo and Juliet'" : "William Shakespear",
+    "How many degrees is a full circle" : "360",
+    "What season do pumpkins get associated with" : "Fall"
 }
 
 
