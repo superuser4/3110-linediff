@@ -1,0 +1,31 @@
+<TEST NAME="TEST_20" FILE="sharedElements.py">
+
+  <VERSION NUMBER="1" CHECKED="TRUE">
+    <LOCATION ORIG="1" NEW="1" />
+    <LOCATION ORIG="2" NEW="2" />
+    <LOCATION ORIG="3" NEW="3" />
+    <LOCATION ORIG="4" NEW="4" />
+    <LOCATION ORIG="5" NEW="5" />
+    <LOCATION ORIG="6" NEW="6" />
+    <LOCATION ORIG="7" NEW="7" />
+    <LOCATION ORIG="8" NEW="8" />
+    <LOCATION ORIG="9" NEW="9" />
+  </VERSION>
+
+  <VERSION NUMBER="2" CHECKED="TRUE">
+    <LOCATION ORIG="2" NEW="2" />
+    <LOCATION ORIG="3" NEW="3" />
+    <LOCATION ORIG="4" NEW="4" />
+    <LOCATION ORIG="5" NEW="5" />
+    <LOCATION ORIG="6" NEW="6" />
+    <LOCATION ORIG="7" NEW="7" />
+    <LOCATION ORIG="8" NEW="8">
+      <ALT NEW="9"/>
+      <ALT NEW="10"/>
+      <ALT NEW="11"/>
+    </LOCATION>
+    <LOCATION ORIG="1" NEW="1" />
+    <LOCATION ORIG="9" NEW="-1" />
+  </VERSION>
+
+</TEST>
