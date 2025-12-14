@@ -25,7 +25,6 @@ def show_chores():
 
 add_chore("Wash Dishes")
 add_chore("Vacuum")
-add_chore("Vacuum")
 add_chore("Clean room")
 
 remove_chore("Vacuum")
