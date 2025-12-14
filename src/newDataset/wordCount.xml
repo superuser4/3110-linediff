@@ -1,0 +1,27 @@
+<TEST NAME="WORD_COUNT" FILE="wordCount.py">
+
+  <VERSION NUMBER="1" CHECKED="TRUE">
+
+    <LOCATION ORIG="1" NEW="-1" />
+    <LOCATION ORIG="2" NEW="-1" />
+    <LOCATION ORIG="3" NEW="-1" />
+    <LOCATION ORIG="6" NEW="-1" />
+    <LOCATION ORIG="7" NEW="-1" />
+    <LOCATION ORIG="8" NEW="-1" />
+    <LOCATION ORIG="11" NEW="8" />
+    <LOCATION ORIG="13" NEW="10" />
+    <LOCATION ORIG="14" NEW="13" />
+    <LOCATION ORIG="15" NEW="14" />
+
+  </VERSION>
+
+  <VERSION NUMBER="2" CHECKED="TRUE">
+
+    <LOCATION ORIG="11" NEW="8" />
+    <LOCATION ORIG="13" NEW="10" />
+    <LOCATION ORIG="14" NEW="13" />
+    <LOCATION ORIG="15" NEW="14" />
+
+  </VERSION>
+
+</TEST>
