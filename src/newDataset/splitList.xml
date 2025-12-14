@@ -1,0 +1,33 @@
+<TEST NAME="TEST_22" FILE="splitList.py">
+
+  <VERSION NUMBER="1" CHECKED="TRUE">
+    <LOCATION ORIG="1" NEW="1" />
+    <LOCATION ORIG="2" NEW="2" />
+    <LOCATION ORIG="3" NEW="3" />
+    <LOCATION ORIG="4" NEW="4" />
+    <LOCATION ORIG="5" NEW="5" />
+    <LOCATION ORIG="6" NEW="6" />
+    <LOCATION ORIG="7" NEW="7" />
+  </VERSION>
+
+  <VERSION NUMBER="2" CHECKED="TRUE">
+    <LOCATION ORIG="4" NEW="4">
+      <ALT NEW="4"/>
+      <ALT NEW="5"/>
+      <ALT NEW="6"/>
+    </LOCATION>
+    <LOCATION ORIG="5" NEW="7">
+      <ALT NEW="8"/>
+    </LOCATION>
+    <LOCATION ORIG="6" NEW="9">
+      <ALT NEW="10"/>
+    </LOCATION>
+    <LOCATION ORIG="7" NEW="11">
+      <ALT NEW="12"/>
+    </LOCATION>
+    <LOCATION ORIG="1" NEW="1" />
+    <LOCATION ORIG="2" NEW="2" />
+    <LOCATION ORIG="3" NEW="3" />
+  </VERSION>
+
+</TEST>
